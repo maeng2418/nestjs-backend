@@ -38,6 +38,11 @@ export class UsersService {
     throw new Error('Method not implemented.');
   }
 
+  async findAll(): Promise<string> {
+    // TODO: DB 연동 이후 구현
+    throw new Error('Method not implemented.');
+  }
+
   private async checkUserExists(_email: string) {
     // TODO: DB 연동 이후 구현
     return false;
