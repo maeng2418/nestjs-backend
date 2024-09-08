@@ -13,14 +13,14 @@ import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import VerifyEmailDto from './dto/verify-email.dto';
 import UserLoginDto from './dto/user-loign.dto';
-import { UserInfo } from './UserInfo';
+import ValidationPipe from './pipe/validation.pipe';
 
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post()
-  async createUser(@Body() dto: CreateUserDto) {
+  async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
     const { name, email, password } = dto;
     return this.usersService.createUser(name, email, password);
   }
