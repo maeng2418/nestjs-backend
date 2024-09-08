@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common';
 import { Transform } from 'class-transformer';
 import {
   IsEmail,
@@ -7,9 +6,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
+import { NotIn } from './not-in';
 
 class CreateUserDto {
-  @Transform(({ value, obj }) => value.trim())
+  @Transform(({ value }) => value.trim())
   @IsString()
   @MinLength(2)
   @MaxLength(30)
@@ -20,13 +20,8 @@ class CreateUserDto {
   @MaxLength(60)
   email: string;
 
-  @Transform(({ value, obj }) => {
-    if (obj.password.includes(obj.name.trim())) {
-      throw new BadRequestException(
-        'password는 name과 같은 문자열을 포함할 수 없습니다.',
-      );
-    }
-    return value.trim();
+  @NotIn('name', {
+    message: 'password는 name과 같은 문자열을 포함할 수 없습니다.',
   })
   @IsString()
   @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/)
