@@ -3,7 +3,7 @@ import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import UserEntity from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { ulid } from 'ulid';
 
 @Injectable()
@@ -13,6 +13,8 @@ export class UsersService {
 
     @InjectRepository(UserEntity) // 유저 저장소 주입
     private userRepository: Repository<UserEntity>,
+
+    private dataSource: DataSource,
   ) {}
 
   async createUser(name: string, email: string, password: string) {
@@ -26,7 +28,14 @@ export class UsersService {
 
     const signupVerifyToken = uuid.v1();
 
-    await this.saveUser(name, email, password, signupVerifyToken);
+    // await this.saveUser(name, email, password, signupVerifyToken);
+    await this.saveUserUsingQueryRunner(
+      name,
+      email,
+      password,
+      signupVerifyToken,
+    );
+    // await this.saveUserUsingTransaction(name, email, password, signupVerifyToken);
     await this.sendMemberJoinEmail(email, signupVerifyToken);
   }
 
@@ -78,6 +87,57 @@ export class UsersService {
     user.signupVerifyToken = signupVerifyToken;
 
     return this.userRepository.save(user); // 저장소를 이용해서 엔티티를 데이터베이스에 저장
+  }
+
+  private async saveUserUsingQueryRunner(
+    name: string,
+    email: string,
+    password: string,
+    signupVerifyToken: string,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect(); // QueryRunner를 데이터베이스에 연결
+    await queryRunner.startTransaction(); // 트랜잭션 시작
+
+    try {
+      const user = new UserEntity(); // 새로운 유저 엔티티 객체 생성
+      user.id = ulid();
+      user.name = name;
+      user.email = email;
+      user.password = password;
+      user.signupVerifyToken = signupVerifyToken;
+
+      await queryRunner.manager.save(user); // 트랜젝션을 커밋하여 영속화 한다.
+      // throw new InternalServerErrorException('일부러 에러 발생');
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      // 에러가 발생하면 롤백
+      await queryRunner.rollbackTransaction();
+    } finally {
+      // 직접 생성한 QueryRunner는 해제시켜주어야 함
+      await queryRunner.release();
+    }
+  }
+
+  private async saveUserUsingTransaction(
+    name: string,
+    email: string,
+    password: string,
+    signupVerifyToken: string,
+  ) {
+    await this.dataSource.transaction(async (manager) => {
+      const user = new UserEntity(); // 새로운 유저 엔티티 객체 생성
+      user.id = ulid();
+      user.name = name;
+      user.email = email;
+      user.password = password;
+      user.signupVerifyToken = signupVerifyToken;
+
+      await manager.save(user); // 트랜젝션을 커밋하여 영속화 한다.
+
+      // throw new InternalServerErrorException('일부러 에러 발생');
+    });
   }
 
   private async sendMemberJoinEmail(email: string, signupVerifyToken: string) {
