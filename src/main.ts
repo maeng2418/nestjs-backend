@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { logger3 } from './middleware/logger3.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -9,6 +10,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.use(logger3); // 함수 미들웨어 추가
   await app.listen(3000);
 }
 bootstrap();
