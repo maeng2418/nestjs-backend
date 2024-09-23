@@ -15,6 +15,8 @@ import { dataSourceOptions } from 'data-source';
 import LoggerMiddleware from './middleware/logger.middleware';
 import Logger2Middleware from './middleware/logger2.middleware';
 import { UsersController } from './users/users.controller';
+import { APP_GUARD } from '@nestjs/core';
+import AuthGuard from './guard/auth.guard';
 
 @Module({
   imports: [
@@ -28,7 +30,13 @@ import { UsersController } from './users/users.controller';
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

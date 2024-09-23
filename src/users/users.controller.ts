@@ -8,12 +8,14 @@ import {
   ParseIntPipe,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import VerifyEmailDto from './dto/verify-email.dto';
 import UserLoginDto from './dto/user-loign.dto';
 import ValidationPipe from './pipe/validation.pipe';
+import AuthGuard from 'src/guard/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -55,5 +57,11 @@ export class UsersController {
   ) {
     console.log(offset, limit);
     return this.usersService.findAll();
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  getHello(): string {
+    return this.usersService.getHello();
   }
 }

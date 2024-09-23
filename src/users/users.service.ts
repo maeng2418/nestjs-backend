@@ -67,6 +67,10 @@ export class UsersService {
     throw new Error('Method not implemented.');
   }
 
+  getHello() {
+    return 'Hello World!';
+  }
+
   private async checkUserExists(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
 
