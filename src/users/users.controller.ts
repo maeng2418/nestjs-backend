@@ -9,6 +9,7 @@ import {
   Post,
   Query,
   UseGuards,
+  Headers,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -16,10 +17,15 @@ import VerifyEmailDto from './dto/verify-email.dto';
 import UserLoginDto from './dto/user-loign.dto';
 import ValidationPipe from './pipe/validation.pipe';
 import AuthGuard from 'src/guard/auth.guard';
+import { UserInfo } from './UserInfo';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post()
   async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
@@ -41,12 +47,13 @@ export class UsersController {
 
   @Get(':id')
   async getUserInfo(
-    @Param(
-      'id',
-      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
-    )
-    userId: string,
-  ) {
+    @Headers() headers: any,
+    @Param('id') userId: string,
+  ): Promise<UserInfo> {
+    const jwtString = headers.authorization.split('Bearer ')[1];
+
+    this.authService.verify(jwtString);
+
     return await this.usersService.getUserInfo(userId);
   }
 

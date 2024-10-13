@@ -82,12 +82,20 @@ export class UsersService {
     });
   }
 
-  async getUserInfo(_userId: string) {
-    // TODO
-    // 1. userId로 유저 정보를 DB에서 조회하고 없다면 에러 처리
-    // 2. 조회한 정보를 UserInfo 타입으로 반환
+  async getUserInfo(userId: string) {
+    // userId로 유저 정보를 DB에서 조회하고 없다면 에러 처리
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    // 조회한 정보를 UserInfo 타입으로 반환
 
-    throw new Error('Method not implemented.');
+    if (!user) {
+      throw new NotFoundException('유저가 존재하지 않습니다.');
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    };
   }
 
   async findAll(): Promise<string> {
