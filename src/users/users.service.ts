@@ -1,5 +1,9 @@
 import * as uuid from 'uuid';
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { EmailService } from 'src/email/email.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import UserEntity from './entities/user.entity';
@@ -60,12 +64,22 @@ export class UsersService {
     });
   }
 
-  async login(_email: string, _password: string): Promise<string> {
-    // TODO
-    // 1. email, password 가진 유저가 있는지 DB에서 조회하고 없다면 에러 처리
-    // 2. JWT 발급
+  async login(email: string, password: string): Promise<string> {
+    // email, password 가진 유저가 있는지 DB에서 조회하고 없다면 에러 처리
+    const user = await this.userRepository.findOne({
+      where: { email, password },
+    });
 
-    throw new Error('Method not implemented.');
+    if (!user) {
+      throw new NotFoundException('유저가 존재하지 않습니다.');
+    }
+
+    // JWT 발급
+    return this.authService.login({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
   }
 
   async getUserInfo(_userId: string) {
