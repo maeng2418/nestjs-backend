@@ -12,7 +12,7 @@ async function bootstrap() {
     }),
   );
   app.use(logger3); // 함수 미들웨어 추가
-  app.useGlobalGuards(new AuthGuard()); // 글로벌 가드 추가
+  // app.useGlobalGuards(new AuthGuard()); // 글로벌 가드 추가
   await app.listen(3000);
 }
 bootstrap();

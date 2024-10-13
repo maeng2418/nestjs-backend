@@ -33,10 +33,11 @@ import authConfig from './config/authConfig';
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
+    // 가드에 종속성 주입을 사용해서 다른 프로바이더를 주입해서 사용하고 싶다면 커스텀 프로바이더를 사용해야 합니다.
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AuthGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {
