@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import UserEntity from './entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { ulid } from 'ulid';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,8 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
 
     private dataSource: DataSource,
+
+    private authService: AuthService,
   ) {}
 
   async createUser(name: string, email: string, password: string) {
@@ -39,11 +42,22 @@ export class UsersService {
     await this.sendMemberJoinEmail(email, signupVerifyToken);
   }
 
-  async verifyEmail(_signupVerifyToken: string): Promise<string> {
-    // TODO
-    // 1. DB에서 signupVerifyToken으로 회원 가입 처리 중인 유저가 있는지 조회하고 없다면 에러 처리
-    // 2. 바로 로그인 상태가 되도록 JWT를 발급
-    throw new Error('Method not implemented.');
+  async verifyEmail(signupVerifyToken: string): Promise<string> {
+    const user = await this.userRepository.findOne({
+      where: { signupVerifyToken: signupVerifyToken },
+    });
+
+    // DB에서 signupVerifyToken으로 회원 가입 처리 중인 유저가 있는지 조회하고 없다면 에러 처리
+    if (!user) {
+      throw new UnprocessableEntityException('가입 처리 중인 유저가 없습니다.');
+    }
+
+    // 바로 로그인 상태가 되도록 JWT를 발급
+    return this.authService.login({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
   }
 
   async login(_email: string, _password: string): Promise<string> {

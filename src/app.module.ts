@@ -17,13 +17,14 @@ import Logger2Middleware from './middleware/logger2.middleware';
 import { UsersController } from './users/users.controller';
 import { APP_GUARD } from '@nestjs/core';
 import AuthGuard from './guard/auth.guard';
+import authConfig from './config/authConfig';
 
 @Module({
   imports: [
     UsersModule,
     ConfigModule.forRoot({
       envFilePath: [`env/.${process.env.NODE_ENV}.env`],
-      load: [emailConfig],
+      load: [emailConfig, authConfig],
       isGlobal: true,
       validationSchema,
     }),
