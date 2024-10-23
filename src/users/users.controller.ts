@@ -61,14 +61,14 @@ export class UsersController {
     return await this.usersService.getUserInfo(userId);
   }
 
-  // @Get()
-  // findAll(
-  //   @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
-  //   @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
-  // ) {
-  //   console.log(offset, limit);
-  //   return this.usersService.findAll();
-  // }
+  @Get()
+  findAll(
+    @Query('offset', new DefaultValuePipe(0), ParseIntPipe) offset: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    console.log(offset, limit);
+    return this.usersService.findAll();
+  }
 
   @UseGuards(AuthGuard)
   @Get()
@@ -76,6 +76,15 @@ export class UsersController {
   getHello(@User() user: User): string {
     // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
     console.log(user);
+    return this.usersService.getHello();
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/username')
+  // 커스텀 데커레이터 User
+  getHello2(@User('userId') userId: string): string {
+    // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
+    console.log(userId);
     return this.usersService.getHello();
   }
 }
