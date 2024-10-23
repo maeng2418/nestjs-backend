@@ -3,7 +3,6 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Post,
@@ -11,19 +10,23 @@ import {
   UseGuards,
   Headers,
   Req,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
 import VerifyEmailDto from './dto/verify-email.dto';
 import UserLoginDto from './dto/user-loign.dto';
-import ValidationPipe from './pipe/validation.pipe';
 import AuthGuard from 'src/guard/auth.guard';
 import { UserInfo } from './UserInfo';
 import { AuthService } from 'src/auth/auth.service';
-import User from '../dacorator/user.dacorator';
+import UserData from '../dacorator/user.dacorator';
+import { IsString } from 'class-validator';
 
-interface User {
-  userId: string;
+class UserEntity {
+  @IsString()
+  name: string;
+
+  @IsString()
   email: string;
 }
 
@@ -73,7 +76,7 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Get()
   // 커스텀 데커레이터 User
-  getHello(@User() user: User): string {
+  getHello(@UserData() user: UserEntity): string {
     // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
     console.log(user);
     return this.usersService.getHello();
@@ -82,9 +85,21 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Get('/username')
   // 커스텀 데커레이터 User
-  getHello2(@User('userId') userId: string): string {
+  getHello2(@UserData('name') name: string): string {
     // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
-    console.log(userId);
+    console.log(name);
+    return this.usersService.getHello();
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/with-pipe')
+  // 커스텀 데커레이터 User
+  getHello3(
+    @UserData(new ValidationPipe({ validateCustomDecorators: true }))
+    user: UserEntity,
+  ): string {
+    // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
+    console.log(user);
     return this.usersService.getHello();
   }
 }
