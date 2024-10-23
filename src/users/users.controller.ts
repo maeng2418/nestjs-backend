@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
   Headers,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -65,7 +66,9 @@ export class UsersController {
 
   @UseGuards(AuthGuard)
   @Get()
-  getHello(): string {
+  getHello(@Req() req): string {
+    // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
+    console.log(req.user);
     return this.usersService.getHello();
   }
 }
