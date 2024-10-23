@@ -22,7 +22,7 @@ class AuthGuard implements CanActivate {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     request.user = {
-      name: 1,
+      name: 'YOUR_NAME',
       email: 'YOUR_EMAIL@gmail.com',
     };
 
