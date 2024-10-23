@@ -20,7 +20,7 @@ import ValidationPipe from './pipe/validation.pipe';
 import AuthGuard from 'src/guard/auth.guard';
 import { UserInfo } from './UserInfo';
 import { AuthService } from 'src/auth/auth.service';
-import User from './dacorator/user.dacorator';
+import User from '../dacorator/user.dacorator';
 
 interface User {
   userId: string;
