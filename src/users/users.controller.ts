@@ -43,7 +43,7 @@ export class UsersController {
   @Post()
   // @SetMetadata('roles', ['admin'])
   @Roles('admin')
-  @UseGuards(HandlerRolesGuard)
+  // @UseGuards(HandlerRolesGuard)
   async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
     const { name, email, password } = dto;
     return this.usersService.createUser(name, email, password);

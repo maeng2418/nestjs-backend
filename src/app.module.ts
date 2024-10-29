@@ -18,6 +18,7 @@ import { UsersController } from './users/users.controller';
 import { APP_GUARD } from '@nestjs/core';
 import AuthGuard from './guard/auth.guard';
 import authConfig from './config/authConfig';
+import HandlerRolesGuard from './guard/role.guard';
 
 @Module({
   imports: [
@@ -38,6 +39,10 @@ import authConfig from './config/authConfig';
     //   provide: APP_GUARD,
     //   useClass: AuthGuard,
     // },
+    {
+      provide: APP_GUARD,
+      useClass: HandlerRolesGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
