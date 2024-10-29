@@ -11,6 +11,7 @@ import {
   Headers,
   Req,
   ValidationPipe,
+  SetMetadata,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -21,6 +22,8 @@ import { UserInfo } from './UserInfo';
 import { AuthService } from 'src/auth/auth.service';
 import UserData from '../dacorator/user.dacorator';
 import { IsString } from 'class-validator';
+import Roles from 'src/dacorator/roles.decorator';
+import HandlerRolesGuard from 'src/guard/role.guard';
 
 class UserEntity {
   @IsString()
@@ -38,6 +41,9 @@ export class UsersController {
   ) {}
 
   @Post()
+  // @SetMetadata('roles', ['admin'])
+  @Roles('admin')
+  @UseGuards(HandlerRolesGuard)
   async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
     const { name, email, password } = dto;
     return this.usersService.createUser(name, email, password);
