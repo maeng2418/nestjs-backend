@@ -18,7 +18,7 @@ import { UsersController } from './users/users.controller';
 import { APP_GUARD } from '@nestjs/core';
 import AuthGuard from './guard/auth.guard';
 import authConfig from './config/authConfig';
-import HandlerRolesGuard from './guard/role.guard';
+import { ClassRolesGuard, HandlerRolesGuard } from './guard/role.guard';
 
 @Module({
   imports: [
@@ -42,6 +42,10 @@ import HandlerRolesGuard from './guard/role.guard';
     {
       provide: APP_GUARD,
       useClass: HandlerRolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ClassRolesGuard,
     },
   ],
 })

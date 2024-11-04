@@ -23,7 +23,7 @@ import { AuthService } from 'src/auth/auth.service';
 import UserData from '../dacorator/user.dacorator';
 import { IsString } from 'class-validator';
 import Roles from 'src/dacorator/roles.decorator';
-import HandlerRolesGuard from 'src/guard/role.guard';
+// import { HandlerRolesGuard } from 'src/guard/role.guard';
 
 class UserEntity {
   @IsString()
@@ -33,6 +33,7 @@ class UserEntity {
   email: string;
 }
 
+@Roles('user')
 @Controller('users')
 export class UsersController {
   constructor(
