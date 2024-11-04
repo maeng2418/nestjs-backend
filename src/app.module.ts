@@ -1,13 +1,8 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import emailConfig from './config/emailConfig';
 import { validationSchema } from './config/validationSchema';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -16,9 +11,8 @@ import LoggerMiddleware from './middleware/logger.middleware';
 import Logger2Middleware from './middleware/logger2.middleware';
 import { UsersController } from './users/users.controller';
 import { APP_GUARD } from '@nestjs/core';
-import AuthGuard from './guard/auth.guard';
 import authConfig from './config/authConfig';
-import { ClassRolesGuard, HandlerRolesGuard } from './guard/role.guard';
+import { RolesGuard } from './guard/role.guard';
 
 @Module({
   imports: [
@@ -39,13 +33,17 @@ import { ClassRolesGuard, HandlerRolesGuard } from './guard/role.guard';
     //   provide: APP_GUARD,
     //   useClass: AuthGuard,
     // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: HandlerRolesGuard,
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ClassRolesGuard,
+    // },
     {
       provide: APP_GUARD,
-      useClass: HandlerRolesGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: ClassRolesGuard,
+      useClass: RolesGuard,
     },
   ],
 })
