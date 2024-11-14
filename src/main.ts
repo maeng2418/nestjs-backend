@@ -2,10 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { logger3 } from './middleware/logger3.middleware';
-import AuthGuard from './guard/auth.guard';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: false,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
