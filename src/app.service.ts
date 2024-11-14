@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
+import MyLogger from './logger/myLogger';
 
 @Injectable()
 export class AppService {
-  private readonly logger = new Logger(AppService.name); // 어느 콘텍스트에서 로깅을 하는지 알려주는 이름을 제공
+  private readonly logger = new MyLogger(); // 어느 콘텍스트에서 로깅을 하는지 알려주는 이름을 제공
 
   getHello(): string {
     this.logger.error('level: error');
