@@ -5,7 +5,10 @@ import { logger3 } from './middleware/logger3.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: false,
+    logger:
+      process.env.NODE_ENV === 'production'
+        ? ['error', 'warn', 'log']
+        : ['error', 'warn', 'log', 'verbose', 'debug'],
   });
   app.useGlobalPipes(
     new ValidationPipe({
