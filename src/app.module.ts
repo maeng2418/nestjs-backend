@@ -13,6 +13,7 @@ import { UsersController } from './users/users.controller';
 import { APP_GUARD } from '@nestjs/core';
 import authConfig from './config/authConfig';
 import { RolesGuard } from './guard/role.guard';
+import { LoggerModule } from './logging/logger.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RolesGuard } from './guard/role.guard';
       validationSchema,
     }),
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [

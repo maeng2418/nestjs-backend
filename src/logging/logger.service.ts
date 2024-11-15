@@ -1,7 +1,8 @@
 /* eslint-disable prefer-rest-params */
-import { ConsoleLogger } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 
-class MyLogger extends ConsoleLogger {
+@Injectable()
+export class LoggerService extends ConsoleLogger {
   error(message: any, stack?: string, context?: string) {
     super.error.apply(this, arguments);
     this.doSomething();
@@ -32,5 +33,3 @@ class MyLogger extends ConsoleLogger {
     // ex. DB에 저장
   }
 }
-
-export default MyLogger;
