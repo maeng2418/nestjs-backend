@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { logger3 } from './middleware/logger3.middleware';
-import { LoggerService } from './logging/logger.service';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -13,7 +13,10 @@ async function bootstrap() {
   });
 
   // 커스텀 로거 전역으로 사용하기
-  app.useLogger(app.get(LoggerService));
+  // app.useLogger(app.get(LoggerService));
+
+  // nest-winston을 사용하여 전역으로 사용하기
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   app.useGlobalPipes(
     new ValidationPipe({

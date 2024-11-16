@@ -9,10 +9,10 @@ import {
   Query,
   UseGuards,
   Headers,
-  Req,
   ValidationPipe,
-  SetMetadata,
   Inject,
+  InternalServerErrorException,
+  LoggerService,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -24,8 +24,7 @@ import { AuthService } from 'src/auth/auth.service';
 import UserData from '../dacorator/user.dacorator';
 import { IsString } from 'class-validator';
 import Roles from 'src/dacorator/roles.decorator';
-import { Logger as WinstonLogger } from 'winston';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 // import { HandlerRolesGuard } from 'src/guard/role.guard';
 
 class UserEntity {
@@ -42,8 +41,8 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-    @Inject(WINSTON_MODULE_PROVIDER)
-    private readonly logger: WinstonLogger,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
   ) {}
 
   @Post()
@@ -51,7 +50,7 @@ export class UsersController {
   @Roles('admin')
   // @UseGuards(HandlerRolesGuard)
   async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
-    this.printWinstonLog(dto);
+    this.printLoggerServiceLog(dto);
     const { name, email, password } = dto;
     return this.usersService.createUser(name, email, password);
   }
@@ -116,13 +115,15 @@ export class UsersController {
     return this.usersService.getHello();
   }
 
-  private printWinstonLog(dto: CreateUserDto) {
-    this.logger.error('error: ', dto);
-    this.logger.warn('warn: ', dto);
-    this.logger.info('info', dto);
-    this.logger.http('http: ', dto);
-    this.logger.verbose('verbose: ', dto);
-    this.logger.debug('debug: ', dto);
-    this.logger.silly('silly: ', dto);
+  private printLoggerServiceLog(dto: CreateUserDto) {
+    try {
+      throw new InternalServerErrorException('test');
+    } catch (e) {
+      this.logger.error('error: ' + JSON.stringify(dto), e.stack);
+    }
+    this.logger.warn('warn: ' + JSON.stringify(dto));
+    this.logger.log('log: ' + JSON.stringify(dto));
+    this.logger.verbose('verbose: ' + JSON.stringify(dto));
+    this.logger.debug('debug: ' + JSON.stringify(dto));
   }
 }
