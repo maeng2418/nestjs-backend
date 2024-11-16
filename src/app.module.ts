@@ -14,11 +14,6 @@ import { APP_GUARD } from '@nestjs/core';
 import authConfig from './config/authConfig';
 import { RolesGuard } from './guard/role.guard';
 import { LoggerModule } from './logging/logger.module';
-import {
-  utilities as nestWinstonModuleUtilities,
-  WinstonModule,
-} from 'nest-winston';
-import * as winston from 'winston';
 
 @Module({
   imports: [
@@ -31,22 +26,6 @@ import * as winston from 'winston';
     }),
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
     LoggerModule,
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.Console({
-          level: process.env.NODE_ENV === 'production' ? 'info' : 'silly',
-          format: winston.format.combine(
-            winston.format.timestamp(),
-            nestWinstonModuleUtilities.format.nestLike('MyApp', {
-              colors: true,
-              prettyPrint: true,
-              processId: true,
-              appName: true,
-            }),
-          ),
-        }),
-      ],
-    }),
   ],
   controllers: [AppController],
   providers: [

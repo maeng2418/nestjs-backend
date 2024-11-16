@@ -13,6 +13,7 @@ import {
   Inject,
   InternalServerErrorException,
   LoggerService,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -24,8 +25,6 @@ import { AuthService } from 'src/auth/auth.service';
 import UserData from '../dacorator/user.dacorator';
 import { IsString } from 'class-validator';
 import Roles from 'src/dacorator/roles.decorator';
-import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-// import { HandlerRolesGuard } from 'src/guard/role.guard';
 
 class UserEntity {
   @IsString()
@@ -41,7 +40,7 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
-    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    @Inject(Logger)
     private readonly logger: LoggerService,
   ) {}
 
