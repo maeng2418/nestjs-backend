@@ -48,7 +48,7 @@ async function bootstrap() {
   // app.useGlobalGuards(new AuthGuard());
 
   // 애플리케이션 전체에 예외필터 적용
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(3000);
 }

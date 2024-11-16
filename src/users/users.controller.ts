@@ -38,7 +38,7 @@ class UserEntity {
 
 @Roles('user')
 @Controller('users')
-@UseFilters(HttpExceptionFilter)
+// @UseFilters(HttpExceptionFilter)
 export class UsersController {
   constructor(
     private usersService: UsersService,
@@ -47,7 +47,7 @@ export class UsersController {
     private readonly logger: LoggerService,
   ) {}
 
-  @UseFilters(HttpExceptionFilter)
+  // @UseFilters(HttpExceptionFilter)
   @Post()
   // @SetMetadata('roles', ['admin'])
   @Roles('admin')

@@ -18,4 +18,9 @@ export class AppController {
   getDatabaseHostFromConfigService(): string {
     return this.configService.get('DATABASE_HOST');
   }
+
+  @Get('/error')
+  error(foo: any): string {
+    return foo.bar;
+  }
 }

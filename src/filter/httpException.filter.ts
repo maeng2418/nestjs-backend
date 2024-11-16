@@ -4,12 +4,14 @@ import {
   ExceptionFilter,
   HttpException,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
 // @Catch 데커레이터는 처리되지 않은 모든 예외를 잡으려 할 때 사용
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private logger: Logger) {}
   catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
@@ -21,6 +23,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       exception = new InternalServerErrorException();
     }
 
+    // HttpException을 상속받는 클래스들은 기존 그대로 처리
     const response = (exception as HttpException).getResponse();
 
     const log = {
@@ -29,7 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       response,
     };
 
-    console.log(log);
+    this.logger.log(log);
 
     res.status((exception as HttpException).getStatus()).json(response);
   }
