@@ -14,6 +14,7 @@ import {
   InternalServerErrorException,
   LoggerService,
   Logger,
+  UseFilters,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -22,9 +23,10 @@ import UserLoginDto from './dto/user-loign.dto';
 import AuthGuard from 'src/guard/auth.guard';
 import { UserInfo } from './UserInfo';
 import { AuthService } from 'src/auth/auth.service';
-import UserData from '../dacorator/user.dacorator';
+import UserData from '../decorator/user.decorator';
 import { IsString } from 'class-validator';
-import Roles from 'src/dacorator/roles.decorator';
+import Roles from 'src/decorator/roles.decorator';
+import { HttpExceptionFilter } from 'src/filter/httpException.filter';
 
 class UserEntity {
   @IsString()
@@ -44,6 +46,7 @@ export class UsersController {
     private readonly logger: LoggerService,
   ) {}
 
+  @UseFilters(HttpExceptionFilter)
   @Post()
   // @SetMetadata('roles', ['admin'])
   @Roles('admin')
