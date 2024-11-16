@@ -7,6 +7,7 @@ import {
   WinstonModule,
 } from 'nest-winston';
 import * as winston from 'winston';
+import { HttpExceptionFilter } from './filter/httpException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -45,6 +46,10 @@ async function bootstrap() {
 
   // 글로벌 가드 추가
   // app.useGlobalGuards(new AuthGuard());
+
+  // 애플리케이션 전체에 예외필터 적용
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   await app.listen(3000);
 }
 bootstrap();
