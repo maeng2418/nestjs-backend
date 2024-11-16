@@ -12,6 +12,7 @@ import {
   Req,
   ValidationPipe,
   SetMetadata,
+  Inject,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import CreateUserDto from './dto/create-user.dto';
@@ -23,6 +24,8 @@ import { AuthService } from 'src/auth/auth.service';
 import UserData from '../dacorator/user.dacorator';
 import { IsString } from 'class-validator';
 import Roles from 'src/dacorator/roles.decorator';
+import { Logger as WinstonLogger } from 'winston';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 // import { HandlerRolesGuard } from 'src/guard/role.guard';
 
 class UserEntity {
@@ -39,6 +42,8 @@ export class UsersController {
   constructor(
     private usersService: UsersService,
     private authService: AuthService,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: WinstonLogger,
   ) {}
 
   @Post()
@@ -46,6 +51,7 @@ export class UsersController {
   @Roles('admin')
   // @UseGuards(HandlerRolesGuard)
   async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
+    this.printWinstonLog(dto);
     const { name, email, password } = dto;
     return this.usersService.createUser(name, email, password);
   }
@@ -108,5 +114,15 @@ export class UsersController {
     // AuthGuard에서 request 객체에 user 정보를 넣었기 때문에 이렇게 사용 가능
     console.log(user);
     return this.usersService.getHello();
+  }
+
+  private printWinstonLog(dto: CreateUserDto) {
+    this.logger.error('error: ', dto);
+    this.logger.warn('warn: ', dto);
+    this.logger.info('info', dto);
+    this.logger.http('http: ', dto);
+    this.logger.verbose('verbose: ', dto);
+    this.logger.debug('debug: ', dto);
+    this.logger.silly('silly: ', dto);
   }
 }
