@@ -38,6 +38,7 @@ class UserEntity {
 
 @Roles('user')
 @Controller('users')
+@UseFilters(HttpExceptionFilter)
 export class UsersController {
   constructor(
     private usersService: UsersService,
