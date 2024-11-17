@@ -1,15 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { logger3 } from './middleware/logger3.middleware';
+import { NestFactory } from '@nestjs/core';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
 import * as winston from 'winston';
-import { HttpExceptionFilter } from './filter/httpException.filter';
+import { AppModule } from './app.module';
 import { LoggingInterceptor } from './interceptor/logging.interceptor';
 import { TransformInterceptor } from './interceptor/transform.interceptor';
+import { logger3 } from './middleware/logger3.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

@@ -3,30 +3,30 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  Headers,
+  Inject,
+  InternalServerErrorException,
+  Logger,
+  LoggerService,
   Param,
   ParseIntPipe,
   Post,
   Query,
   UseGuards,
-  Headers,
+  UseInterceptors,
   ValidationPipe,
-  Inject,
-  InternalServerErrorException,
-  LoggerService,
-  Logger,
-  UseFilters,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import CreateUserDto from './dto/create-user.dto';
-import VerifyEmailDto from './dto/verify-email.dto';
-import UserLoginDto from './dto/user-loign.dto';
-import AuthGuard from 'src/guard/auth.guard';
-import { UserInfo } from './UserInfo';
-import { AuthService } from 'src/auth/auth.service';
-import UserData from '../decorator/user.decorator';
 import { IsString } from 'class-validator';
+import { AuthService } from 'src/auth/auth.service';
 import Roles from 'src/decorator/roles.decorator';
-import { HttpExceptionFilter } from 'src/filter/httpException.filter';
+import AuthGuard from 'src/guard/auth.guard';
+import { ErrorsInterceptor } from 'src/interceptor/errors.interceptor';
+import UserData from '../decorator/user.decorator';
+import CreateUserDto from './dto/create-user.dto';
+import UserLoginDto from './dto/user-loign.dto';
+import VerifyEmailDto from './dto/verify-email.dto';
+import { UserInfo } from './UserInfo';
+import { UsersService } from './users.service';
 
 class UserEntity {
   @IsString()
@@ -70,6 +70,7 @@ export class UsersController {
     return await this.usersService.login(email, password);
   }
 
+  @UseInterceptors(ErrorsInterceptor)
   @UseGuards(AuthGuard)
   @Get(':id')
   async getUserInfo(
