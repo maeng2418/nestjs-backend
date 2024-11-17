@@ -9,6 +9,7 @@ import {
 import * as winston from 'winston';
 import { HttpExceptionFilter } from './filter/httpException.filter';
 import { LoggingInterceptor } from './interceptor/logging.interceptor';
+import { TransformInterceptor } from './interceptor/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -51,9 +52,10 @@ async function bootstrap() {
   // 애플리케이션 전체에 예외필터 적용
   // app.useGlobalFilters(new HttpExceptionFilter());
 
-  // 인터셉터 전역으로 적용
-  app.useGlobalInterceptors(new LoggingInterceptor());
-
+  app.useGlobalInterceptors(
+    new LoggingInterceptor(), // 로깅 인터셉터
+    new TransformInterceptor(), // 응답매핑 인터셉터
+  );
 
   await app.listen(3000);
 }
