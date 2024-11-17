@@ -1,20 +1,21 @@
 import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import emailConfig from './config/emailConfig';
-import { validationSchema } from './config/validationSchema';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'data-source';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import authConfig from './config/authConfig';
+import emailConfig from './config/emailConfig';
+import { validationSchema } from './config/validationSchema';
+import { HttpExceptionFilter } from './filter/httpException.filter';
+import { RolesGuard } from './guard/role.guard';
+import { LoggerModule } from './logging/logger.module';
+import { LoggingModule } from './logging/logging.module';
 import LoggerMiddleware from './middleware/logger.middleware';
 import Logger2Middleware from './middleware/logger2.middleware';
 import { UsersController } from './users/users.controller';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import authConfig from './config/authConfig';
-import { RolesGuard } from './guard/role.guard';
-import { LoggerModule } from './logging/logger.module';
-import { HttpExceptionFilter } from './filter/httpException.filter';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { HttpExceptionFilter } from './filter/httpException.filter';
     }),
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
     LoggerModule,
+    LoggingModule,
   ],
   controllers: [AppController],
   providers: [

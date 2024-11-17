@@ -45,7 +45,8 @@ export class ClassRolesGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getClass());
 
     // DB에서 얻은 값이 메타데이터에 포함되어 있는지 확인
-    return roles?.includes(userRole) ?? true;
+    // return roles?.includes(userRole) ?? true;
+    return true;
   }
 
   private getUserRole(userId: string): string {
@@ -75,9 +76,9 @@ export class RolesGuard implements CanActivate {
     ]);
 
     // DB에서 얻은 값이 메타데이터에 포함되어 있는지 확인
-    if (roles?.length > 0) {
-      return roles.includes(userRole);
-    }
+    // if (roles?.length > 0) {
+    //   return roles.includes(userRole);
+    // }
     return true;
   }
 

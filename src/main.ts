@@ -6,7 +6,6 @@ import {
 } from 'nest-winston';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
-import { LoggingInterceptor } from './interceptor/logging.interceptor';
 import { TransformInterceptor } from './interceptor/transform.interceptor';
 import { logger3 } from './middleware/logger3.middleware';
 
@@ -52,7 +51,6 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
 
   app.useGlobalInterceptors(
-    new LoggingInterceptor(), // 로깅 인터셉터
     new TransformInterceptor(), // 응답매핑 인터셉터
   );
 
