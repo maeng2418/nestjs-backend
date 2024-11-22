@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'data-source';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { BatchModule } from './batch/batch.module';
 import authConfig from './config/authConfig';
 import emailConfig from './config/emailConfig';
 import { validationSchema } from './config/validationSchema';
@@ -29,6 +30,7 @@ import { UsersModule } from './users/users.module';
     TypeOrmModule.forRoot({ ...dataSourceOptions }),
     LoggerModule,
     LoggingModule,
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [
