@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, Interval } from '@nestjs/schedule';
+import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 
 @Injectable()
 export class TaskService {
@@ -19,5 +19,11 @@ export class TaskService {
   @Interval('intervalTask', 3000)
   handleInterval() {
     this.logger.log('Task Called by interval');
+  }
+
+  // 앱이 실행되고 5초 후에 수행
+  @Timeout('timeoutTask', 5000)
+  handleTimeout() {
+    this.logger.log('Task Called by timeout');
   }
 }
