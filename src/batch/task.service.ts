@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron, CronExpression, Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class TaskService {
@@ -13,5 +13,11 @@ export class TaskService {
   @Cron(CronExpression.MONDAY_TO_FRIDAY_AT_1AM, { name: 'cronTesk' })
   handleCron() {
     this.logger.log('Task Called');
+  }
+
+  // 앱이 실행되고 3초 후에 처음으로 수행되고 3초마다 수행
+  @Interval('intervalTask', 3000)
+  handleInterval() {
+    this.logger.log('Task Called by interval');
   }
 }
