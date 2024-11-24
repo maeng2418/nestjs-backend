@@ -13,6 +13,7 @@ import emailConfig from './config/emailConfig';
 import { validationSchema } from './config/validationSchema';
 import { HttpExceptionFilter } from './filter/httpException.filter';
 import { RolesGuard } from './guard/role.guard';
+import { DogHealthIndicator } from './health-check/dog-health-indicator';
 import { HealthCheckController } from './health-check/health-check.controller';
 import { LoggerModule } from './logging/logger.module';
 import { LoggingModule } from './logging/logging.module';
@@ -63,6 +64,7 @@ import { UsersModule } from './users/users.module';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
+    DogHealthIndicator,
   ],
 })
 export class AppModule implements NestModule {

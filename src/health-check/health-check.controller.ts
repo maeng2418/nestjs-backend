@@ -5,6 +5,7 @@ import {
   HttpHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
+import { DogHealthIndicator } from './dog-health-indicator';
 
 @Controller('health-check')
 export class HealthCheckController {
@@ -12,6 +13,7 @@ export class HealthCheckController {
     private health: HealthCheckService,
     private http: HttpHealthIndicator,
     private db: TypeOrmHealthIndicator,
+    private dogHealthIndicator: DogHealthIndicator,
   ) {}
 
   @Get()
@@ -24,6 +26,8 @@ export class HealthCheckController {
       () => this.http.pingCheck('nestjs-docs', 'https://docs.nestjs.com'),
       // DB 헬스 체크
       () => this.db.pingCheck('database'),
+      // 강아지 헬스 체크
+      () => this.dogHealthIndicator.isHealthy('dog'),
     ]);
   }
 }
