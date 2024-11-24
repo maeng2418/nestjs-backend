@@ -1,6 +1,8 @@
+import { HttpModule } from '@nestjs/axios';
 import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { TerminusModule } from '@nestjs/terminus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'data-source';
 import { AppController } from './app.controller';
@@ -11,6 +13,7 @@ import emailConfig from './config/emailConfig';
 import { validationSchema } from './config/validationSchema';
 import { HttpExceptionFilter } from './filter/httpException.filter';
 import { RolesGuard } from './guard/role.guard';
+import { HealthCheckController } from './health-check/health-check.controller';
 import { LoggerModule } from './logging/logger.module';
 import { LoggingModule } from './logging/logging.module';
 import LoggerMiddleware from './middleware/logger.middleware';
@@ -31,8 +34,10 @@ import { UsersModule } from './users/users.module';
     LoggerModule,
     LoggingModule,
     BatchModule,
+    TerminusModule,
+    HttpModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthCheckController],
   providers: [
     AppService,
     // 가드에 종속성 주입을 사용해서 다른 프로바이더를 주입해서 사용하고 싶다면 커스텀 프로바이더를 사용해야 합니다.
