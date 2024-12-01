@@ -16,7 +16,7 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { IsString } from 'class-validator';
 import Roles from 'src/decorator/roles.decorator';
 import AuthGuard from 'src/guard/auth.guard';
@@ -26,6 +26,7 @@ import { CreateUserCommand } from './command/create-user.command';
 import CreateUserDto from './dto/create-user.dto';
 import UserLoginDto from './dto/user-loign.dto';
 import VerifyEmailDto from './dto/verify-email.dto';
+import { GetUserInfoQuery } from './query/get-user-info.query';
 import { UserInfo } from './UserInfo';
 import { UsersService } from './users.service';
 
@@ -47,6 +48,7 @@ export class UsersController {
     @Inject(Logger)
     private readonly logger: LoggerService,
     private commandBus: CommandBus,
+    private queryBus: QueryBus,
   ) {}
 
   // @UseFilters(HttpExceptionFilter)
@@ -82,7 +84,8 @@ export class UsersController {
     @Headers() headers: any,
     @Param('id') userId: string,
   ): Promise<UserInfo> {
-    return await this.usersService.getUserInfo(userId);
+    const getUserInfoQuery = new GetUserInfoQuery(userId);
+    return this.queryBus.execute(getUserInfoQuery);
   }
 
   @Get()

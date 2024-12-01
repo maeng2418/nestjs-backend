@@ -6,6 +6,7 @@ import { EmailModule } from 'src/email/email.module';
 import { CreateUserHandler } from './command/create-user.handler';
 import UserEntity from './entities/user.entity';
 import { UserEventsHandler } from './event/user-events.handler';
+import { GetUserInfoQueryHandler } from './query/get-user-info.handler';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -17,6 +18,12 @@ import { UsersService } from './users.service';
     CqrsModule,
   ], // 유저 모듈 내에서 사용할 저장소 등록
   controllers: [UsersController],
-  providers: [UsersService, Logger, CreateUserHandler, UserEventsHandler],
+  providers: [
+    UsersService,
+    Logger,
+    CreateUserHandler,
+    UserEventsHandler,
+    GetUserInfoQueryHandler,
+  ],
 })
 export class UsersModule {}

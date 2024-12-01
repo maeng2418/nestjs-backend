@@ -1,15 +1,15 @@
-import * as uuid from 'uuid';
 import {
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { EmailService } from 'src/email/email.service';
 import { InjectRepository } from '@nestjs/typeorm';
-import UserEntity from './entities/user.entity';
+import { AuthService } from 'src/auth/auth.service';
+import { EmailService } from 'src/email/email.service';
 import { DataSource, Repository } from 'typeorm';
 import { ulid } from 'ulid';
-import { AuthService } from 'src/auth/auth.service';
+import * as uuid from 'uuid';
+import UserEntity from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
@@ -42,8 +42,6 @@ export class UsersService {
       password,
       signupVerifyToken,
     );
-    // await this.saveUserUsingTransaction(name, email, password, signupVerifyToken);
-    await this.sendMemberJoinEmail(email, signupVerifyToken);
   }
 
   async verifyEmail(signupVerifyToken: string): Promise<string> {
@@ -80,22 +78,6 @@ export class UsersService {
       name: user.name,
       email: user.email,
     });
-  }
-
-  async getUserInfo(userId: string) {
-    // userId로 유저 정보를 DB에서 조회하고 없다면 에러 처리
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-    // 조회한 정보를 UserInfo 타입으로 반환
-
-    if (!user) {
-      throw new NotFoundException('유저가 존재하지 않습니다.');
-    }
-
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    };
   }
 
   async findAll(): Promise<string> {
@@ -178,12 +160,5 @@ export class UsersService {
 
       // throw new InternalServerErrorException('일부러 에러 발생');
     });
-  }
-
-  private async sendMemberJoinEmail(email: string, signupVerifyToken: string) {
-    await this.emailService.sendMemberJoinVerification(
-      email,
-      signupVerifyToken,
-    );
   }
 }
