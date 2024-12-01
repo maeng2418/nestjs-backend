@@ -1,18 +1,18 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EmailService } from 'src/email/email.service';
 import { DataSource, Repository } from 'typeorm';
 import { ulid } from 'ulid';
 import * as uuid from 'uuid';
 import UserEntity from '../entities/user.entity';
+import { TestEvent } from '../event/test.event';
+import { UserCreatedEvent } from '../event/user-created.event';
 import { CreateUserCommand } from './create-user.command';
 
 @Injectable()
 @CommandHandler(CreateUserCommand)
 export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
   constructor(
-    private emailService: EmailService,
     private dataSource: DataSource,
     private eventBus: EventBus,
 
@@ -38,6 +38,9 @@ export class CreateUserHandler implements ICommandHandler<CreateUserCommand> {
       password,
       signupVerifyToken,
     );
+
+    this.eventBus.publish(new UserCreatedEvent(email, signupVerifyToken));
+    this.eventBus.publish(new TestEvent());
   }
 
   private async checkUserExists(email: string) {
