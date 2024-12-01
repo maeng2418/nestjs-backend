@@ -16,12 +16,13 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
+import { CommandBus } from '@nestjs/cqrs';
 import { IsString } from 'class-validator';
-import { AuthService } from 'src/auth/auth.service';
 import Roles from 'src/decorator/roles.decorator';
 import AuthGuard from 'src/guard/auth.guard';
 import { ErrorsInterceptor } from 'src/interceptor/errors.interceptor';
 import UserData from '../decorator/user.decorator';
+import { CreateUserCommand } from './command/create-user.command';
 import CreateUserDto from './dto/create-user.dto';
 import UserLoginDto from './dto/user-loign.dto';
 import VerifyEmailDto from './dto/verify-email.dto';
@@ -42,9 +43,10 @@ class UserEntity {
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    private authService: AuthService,
+    // private authService: AuthService,
     @Inject(Logger)
     private readonly logger: LoggerService,
+    private commandBus: CommandBus,
   ) {}
 
   // @UseFilters(HttpExceptionFilter)
@@ -53,9 +55,12 @@ export class UsersController {
   @Roles('admin')
   // @UseGuards(HandlerRolesGuard)
   async createUser(@Body(ValidationPipe) dto: CreateUserDto) {
-    this.printLoggerServiceLog(dto);
+    // this.printLoggerServiceLog(dto);
     const { name, email, password } = dto;
-    return this.usersService.createUser(name, email, password);
+
+    const command = new CreateUserCommand(name, email, password);
+
+    return this.commandBus.execute(command);
   }
 
   @Post('/email-verify')
