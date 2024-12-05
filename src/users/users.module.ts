@@ -3,11 +3,14 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { EmailModule } from 'src/email/email.module';
-import { CreateUserHandler } from './command/create-user.handler';
-import UserEntity from './entities/user.entity';
-import { UserEventsHandler } from './event/user-events.handler';
-import { GetUserInfoQueryHandler } from './query/get-user-info.handler';
-import { UsersController } from './users.controller';
+import { CreateUserHandler } from './application/command/create-user.handler';
+import { UserEventsHandler } from './application/event/user-events.handler';
+import { GetUserInfoQueryHandler } from './application/query/get-user-info.handler';
+import { UserFactory } from './domain/user.factory';
+import { EmailService } from './infra/adapter/EmailService';
+import UserEntity from './infra/db/entity/user.entity';
+import { UserRepository } from './infra/db/repository/UserRepository';
+import { UsersController } from './interface/users.controller';
 import { UsersService } from './users.service';
 
 @Module({
@@ -24,6 +27,9 @@ import { UsersService } from './users.service';
     CreateUserHandler,
     UserEventsHandler,
     GetUserInfoQueryHandler,
+    UserFactory,
+    { provide: 'UserRepository', useClass: UserRepository },
+    { provide: 'EmailService', useClass: EmailService },
   ],
 })
 export class UsersModule {}

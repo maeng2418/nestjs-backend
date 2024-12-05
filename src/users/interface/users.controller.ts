@@ -21,14 +21,14 @@ import { IsString } from 'class-validator';
 import Roles from 'src/decorator/roles.decorator';
 import AuthGuard from 'src/guard/auth.guard';
 import { ErrorsInterceptor } from 'src/interceptor/errors.interceptor';
-import UserData from '../decorator/user.decorator';
-import { CreateUserCommand } from './command/create-user.command';
+import UserData from '../../decorator/user.decorator';
+import { CreateUserCommand } from '../application/command/create-user.command';
+import { GetUserInfoQuery } from '../application/query/get-user-info.query';
+import { UsersService } from '../users.service';
 import CreateUserDto from './dto/create-user.dto';
 import UserLoginDto from './dto/user-loign.dto';
 import VerifyEmailDto from './dto/verify-email.dto';
-import { GetUserInfoQuery } from './query/get-user-info.query';
 import { UserInfo } from './UserInfo';
-import { UsersService } from './users.service';
 
 class UserEntity {
   @IsString()

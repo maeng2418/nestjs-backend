@@ -19,7 +19,7 @@ import { LoggerModule } from './logging/logger.module';
 import { LoggingModule } from './logging/logging.module';
 import LoggerMiddleware from './middleware/logger.middleware';
 import Logger2Middleware from './middleware/logger2.middleware';
-import { UsersController } from './users/users.controller';
+import { UsersController } from './users/interface/users.controller';
 import { UsersModule } from './users/users.module';
 
 @Module({
